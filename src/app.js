@@ -1,7 +1,7 @@
 var express = require('express'),
     mongoose = require('mongoose');
 
-var db = mongoose.connect('mongodb://localhost:bookAPI');
+var db = mongoose.connect('mongodb://localhost/bookAPI');
 
 var app = express();
 
@@ -17,13 +17,22 @@ bookRouter.route('/Books')
 
         if(req.query.genre)
             query.genre = req.query.genre;
-        
+
         Book.find(query, function(err, books){
-            console.log(err,books);
             if(err)
                 res.status(500).send(err);
             else
                 res.json(books);
+        });
+    });
+
+bookRouter.route('/Books/:bookId')
+    .get(function(req, res){
+        Book.findById(req.params.bookId, function(err, book){
+            if(err)
+                res.status(500).send(err);
+            else
+                res.json(book);
         });
     });
 
