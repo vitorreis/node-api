@@ -14,40 +14,9 @@ var Book = require('./models/bookModel');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-var bookRouter = express.Router();
+bookRouter = require('./routes/bookRoutes')(Book);
 
-bookRouter.route('/Books')
-    .get(function(req, res){
-        var query = {};
-
-        if(req.query.genre)
-            query.genre = req.query.genre;
-
-        Book.find(query, function(err, books){
-            if(err)
-                res.status(500).send(err);
-            else
-                res.json(books);
-        });
-    })
-    .post(function(req, res){
-        var book = new Book(req.body);
-
-        book.save();
-        res.status(201).send(book);
-    });
-
-bookRouter.route('/Books/:bookId')
-    .get(function(req, res){
-        Book.findById(req.params.bookId, function(err, book){
-            if(err)
-                res.status(500).send(err);
-            else
-                res.json(book);
-        });
-    });
-
-app.use('/api', bookRouter);
+app.use('/api/books', bookRouter);
 
 app.get('/', function(req, res){
     res.send('Hello from book api, book api rocks!');
